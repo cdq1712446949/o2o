@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="spring-core">
+    <CLASSES>
+      <root url="file://D:/jar包/spring-core" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/spring-webmvc-4.3.7.RELEASE-sources.jar!/" />
+    </SOURCES>
+    <jarDirectory url="file://D:/jar包/spring-core" recursive="false" />
+  </library>
+</component>
