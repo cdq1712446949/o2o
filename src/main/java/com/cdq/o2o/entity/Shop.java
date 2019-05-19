@@ -20,7 +20,7 @@ public class Shop {
 	private Date lastEditTime;
 	private Integer enableStatus;
 	private String advice;
-
+	private PersonInfo owner;
 	private List<ShopAuthMap> staffList;
 	private Area area;
 	private ShopCategory shopCategory;
@@ -182,4 +182,11 @@ public class Shop {
 		this.parentCategory = parentCategory;
 	}
 
+	public PersonInfo getOwner() {
+		return owner;
+	}
+
+	public void setOwner(PersonInfo owner) {
+		this.owner = owner;
+	}
 }
