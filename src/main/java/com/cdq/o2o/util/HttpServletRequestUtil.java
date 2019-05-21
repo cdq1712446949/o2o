@@ -1,5 +1,7 @@
 package com.cdq.o2o.util;
 
+import net.sf.json.JSON;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class HttpServletRequestUtil {
@@ -43,6 +45,7 @@ public class HttpServletRequestUtil {
     public static String getString(HttpServletRequest request, String name) {
         try {
             String result = request.getParameter(name);
+
             if (result != null) {
                 result = result.trim();
             }

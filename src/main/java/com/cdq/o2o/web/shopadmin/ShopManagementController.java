@@ -1,10 +1,15 @@
 package com.cdq.o2o.web.shopadmin;
 
 import com.cdq.o2o.dto.ShopExecution;
+import com.cdq.o2o.entity.Area;
 import com.cdq.o2o.entity.PersonInfo;
 import com.cdq.o2o.entity.Shop;
+import com.cdq.o2o.entity.ShopCategory;
 import com.cdq.o2o.enums.ShopStateEnum;
+import com.cdq.o2o.service.AreaService;
+import com.cdq.o2o.service.ShopCategoryService;
 import com.cdq.o2o.service.ShopService;
+import com.cdq.o2o.util.CodeUtil;
 import com.cdq.o2o.util.HttpServletRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +22,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -28,9 +34,15 @@ public class ShopManagementController {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private ShopCategoryService shopCategoryService;
+
+    @Autowired
+    private AreaService areaService;
+
     /**
      * requestMapping中的value值都是小写
-     *
+     *注册店铺信息
      * @param httpServletRequest
      * @return
      */
@@ -38,6 +50,12 @@ public class ShopManagementController {
     @ResponseBody
     private Map<String, Object> registerShop(HttpServletRequest httpServletRequest) {
         Map<String, Object> modelMap = new HashMap<>();
+        //验证验证码
+        if (!CodeUtil.checkVerifyCode(httpServletRequest)){
+            modelMap.put("success",false);
+            modelMap.put("errMsg","验证码错误!");
+            return modelMap;
+        }
         //1.接收并转化参数
         String shopStr = HttpServletRequestUtil.getString(httpServletRequest, "shopStr");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,8 +86,9 @@ public class ShopManagementController {
         if (shop != null && commonsMultipartFile != null) {
             //方便测试，后期改成在session中获取owner
             PersonInfo owner = new PersonInfo();
-            owner.setUserId(1L);
+            owner.setUserId(8L);
             shop.setOwner(owner);
+            shop.setOwnerId(8l);
             ShopExecution se = null;
             try {
                 se = shopService.addShop(shop
@@ -81,9 +100,10 @@ public class ShopManagementController {
                     modelMap.put("success", false);
                     modelMap.put("errMsg", se.getStatusInfo());
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 modelMap.put("success", false);
                 modelMap.put("errMsg", e.getMessage());
+                System.out.println(e.getMessage());
                 return modelMap;
             }
         } else {
@@ -93,6 +113,26 @@ public class ShopManagementController {
         }
         return modelMap;
     }
+
+    /**
+     * 获取店铺分类信息和店铺区域信息
+     * @return
+     */
+
+    @RequestMapping(value = "/getshopinitinfo", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String, Object> getShopInitInfo() {
+        Map<String,Object> modelMap=new HashMap<>();
+        List<ShopCategory> shopCategoryList=new ArrayList<>();
+        List<Area> areaList=new ArrayList<>();
+        shopCategoryList=shopCategoryService.getShopCategory();
+        areaList=areaService.getAreaList();
+        modelMap.put("shopCategoryList", shopCategoryList);
+        modelMap.put("areaList", areaList);
+        modelMap.put("success", true);
+        return modelMap;
+    }
+
 
 //    private static void inputStreamToFile(InputStream ins, File file) {
 //        FileOutputStream os = null;

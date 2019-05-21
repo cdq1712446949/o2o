@@ -3,8 +3,8 @@
  */
 //开始加载文档后执行
 $(function () {
-    var initUrl = '/shopadmin/getshopinitinfo';
-    var registerShopUrl = '/shopadmin/registershop';
+    var initUrl = '/o2o/shopadmin/getshopinitinfo';
+    var registerShopUrl = '/o2o/shopadmin/registershop';
     alert(initUrl);
     getShopInitInfo();
 
@@ -15,13 +15,13 @@ $(function () {
                 var tempAreaHtml = '';
                 //.map方法类似于foreach
                 data.shopCategoryList.map(function (item, index) {
-                    tempHtml += '<option data-id="' + item.shopCategoryId + '>' + item.shopCategoryName + '</option>';
+                    tempHtml += '<option data-id="' + item.shopCategoryId + '">' + item.shopCategoryName + '</option>';
                 });
                 data.areaList.map(function (item, index) {
-                    tempAreaHtml += '<option data-id="' + item.areaId + '>' + item.areaName + '</option>';
+                    tempAreaHtml += '<option data-id="' + item.areaId + '">' + item.areaName + '</option>';
                 });
                 $('#shop-category').html(tempHtml);
-                $('#shop-area').html(tempAreaHtml);
+                $('#area').html(tempAreaHtml);
             }
         });
         $('#submit').click(function () {
@@ -29,6 +29,7 @@ $(function () {
             if (!result) {
                 return;
             }
+
             var shop = {};
             shop.shopName = $('#shop-name').val();
             shop.shopAddr = $('#shop-addr').val();
@@ -44,26 +45,37 @@ $(function () {
                     return !this.selected;
                 }).data('id')
             }
+            var shopJson=JSON.stringify(shop);
             var shopImg = $('#shop-img')[0].files[0];
-            var formData = new FormData();
-            formData.append("shopImg", shopImg);
-            formData.append("shopStr", shop);
+            var fd = new FormData();
+            fd.append("shopImg", shopImg);
+            fd.append("shopStr", shopJson);
+            console.log(fd.get('shopStr'));
+            var verifyCodeActual = $('#j-kaptcha').val();
+            if (!verifyCodeActual) {
+                $.toast('请输入验证码');
+                return;
+            }
+            fd.append("verifyCodeActual", verifyCodeActual);
+            console.log(fd.get("verifyCodeActual"));
             $.ajax({
                 url: registerShopUrl,
                 type: 'POST',
-                data: formData,
+                data: fd,
                 contentType: false,
-                proceesData: false,
+                processData: false,
                 cache: false,
                 success: function (data) {
                     if (data.success) {
                         $.toast("提交成功！");
                     } else {
                         $.toast("提交失败" + data.errMsg);
+                        $('#kaptcha-img').click()
                     }
                 }
-            })
+            });
         });
+
         //在某个元素后面添加元素  .after();
         function checkItem() {
             var isSubmit = true;
