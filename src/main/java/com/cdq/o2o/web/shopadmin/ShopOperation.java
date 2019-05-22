@@ -21,6 +21,11 @@ public class ShopOperation {
     @RequestMapping(value = "/shopmanagement")
     public String shopManagement(){
         return "shop/shopmanagement";
-    };
+    }
+
+    @RequestMapping(value = "/productcategorymanagement")
+    public String productCategoryManagement(){
+        return "shop/productcategorymanagement";
+    }
 
 }
