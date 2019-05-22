@@ -4,7 +4,6 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -31,9 +30,9 @@ public class ImageUtil {
      * 3.判断路径文件是否存在，如果不存在创建文件
      * 4.Thumbnails处理图片并保存
      *
-     * @param targetAddr           文件存放地址
+     * @param targetAddr 文件存放地址
      */
-    public static String generateThumbnails(InputStream inputStream, String targetAddr,String fileName) {
+    public static String generateThumbnails(InputStream inputStream, String targetAddr, String fileName) {
         String realFileName = getRandomFileName();
         String extension = getFileExtension(fileName);
         makeDirPath(targetAddr);
@@ -42,9 +41,9 @@ public class ImageUtil {
         File file = new File(PathUtil.getImageBasePath() + relativeAddr);
         logger.debug("current completeAddr:" + PathUtil.getImageBasePath() + relativeAddr);
         try {
-            basePath=URLDecoder.decode(basePath,"utf-8");
+            basePath = URLDecoder.decode(basePath, "utf-8");
             Thumbnails.of(inputStream).size(200, 200)
-                    .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath+"watermark.jpg" )), 0.25f)
+                    .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath + "watermark.jpg")), 0.25f)
                     .outputQuality(0.8f)
                     .toFile(file);
         } catch (Exception e) {
@@ -83,6 +82,24 @@ public class ImageUtil {
         String time = format.format(new Date());
         int number = random.nextInt(89999) + 10000;
         return time + String.valueOf(number);
+    }
+
+    /**
+     * 如果storePath是目录及删除该目录下所有文件
+     * 如果storePath是文件就删除该文件
+     * @param storePath
+     */
+    public static void deleteFileOrPath(String storePath) {
+        File fileOrPath = new File(PathUtil.getImageBasePath() + storePath);
+        if (fileOrPath.exists()) {
+            if (fileOrPath.isDirectory()) {
+                File[] files = fileOrPath.listFiles();
+                for (int i=0;i<files.length;i++){
+                    files[i].delete();
+                }
+            }
+            fileOrPath.delete();
+        }
     }
 
     public static void main(String[] args) throws IOException {

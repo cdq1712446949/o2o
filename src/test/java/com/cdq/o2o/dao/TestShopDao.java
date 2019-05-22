@@ -1,6 +1,7 @@
 package com.cdq.o2o.dao;
 
 import com.cdq.o2o.entity.Area;
+import com.cdq.o2o.entity.PersonInfo;
 import com.cdq.o2o.entity.Shop;
 import com.cdq.o2o.entity.ShopCategory;
 import org.junit.Ignore;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 
 import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
 
@@ -15,6 +17,26 @@ public class TestShopDao extends BaseTest {
 
     @Autowired
     private ShopDao shopDao;
+
+    @Test
+    public void testQueryShopListAndCount(){
+        PersonInfo owner = new PersonInfo();
+        owner.setUserId(8L);
+        Shop shop=new Shop();
+        shop.setOwner(owner);
+        List<Shop> list=shopDao.queryShopList(shop,0,5);
+        int count=shopDao.queryShopCount(shop);
+        System.out.println("数据条数"+list.size());
+        System.out.println("数据总数"+count);
+    }
+
+    @Test
+    @Ignore
+    public void testQueryShopById(){
+        Shop shop=shopDao.queryShopById(66L);
+        System.out.println("areaId:"+shop.getArea().getAreaId());
+        System.out.println("areaName:"+shop.getArea().getAreaName());
+    }
 
     @Test
     @Ignore
@@ -43,6 +65,7 @@ public class TestShopDao extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void testUpdateShop(){
         Shop shop = new Shop();
         shop.setShopId(30L);

@@ -13,4 +13,14 @@ public class ShopOperation {
         return "shop/shopoperation";       //spring-web.xml中定义了html路径
     }
 
+    @RequestMapping(value = "/shoplist")
+    public String shopList(){
+        return "shop/shoplist";
+    }
+
+    @RequestMapping(value = "/shopmanagement")
+    public String shopManagement(){
+        return "shop/shopmanagement";
+    };
+
 }

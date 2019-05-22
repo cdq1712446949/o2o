@@ -6,6 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CodeUtil {
 
+    /**
+     * 验证码验证
+     * @param request
+     * @return
+     */
     public static boolean checkVerifyCode(HttpServletRequest request) {
         String verifyCodeExpected = (String) request.getSession()
                 .getAttribute(Constants.KAPTCHA_SESSION_KEY);
