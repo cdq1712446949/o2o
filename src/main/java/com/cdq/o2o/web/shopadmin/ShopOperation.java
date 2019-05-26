@@ -28,4 +28,13 @@ public class ShopOperation {
         return "shop/productcategorymanagement";
     }
 
+    @RequestMapping(value = "/productoperation")
+    public String productOperation(){
+        return "shop/productoperation";
+    }
+
+    @RequestMapping(value = "/productmanage")
+    public String productManage(){
+        return "shop/productlist";
+    }
 }

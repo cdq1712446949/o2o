@@ -1,6 +1,7 @@
 package com.cdq.o2o.service;
 
 import com.cdq.o2o.dao.BaseTest;
+import com.cdq.o2o.dto.ImageHolder;
 import com.cdq.o2o.dto.ShopExecution;
 import com.cdq.o2o.entity.Area;
 import com.cdq.o2o.entity.Shop;
@@ -39,7 +40,7 @@ public class TestShopService extends BaseTest {
         shop.setShopName("修改后的名称");
         File file = new File("D:\\projectdev\\iamge\\cat.jpg");
         InputStream ins = new FileInputStream(file);
-        ShopExecution se = shopService.modifyShop(shop, ins, "cat.jpg");
+        ShopExecution se = shopService.modifyShop(shop, new ImageHolder("cat.jpg",ins));
         System.out.println(se.getShop().getShopName());
     }
 
@@ -62,7 +63,7 @@ public class TestShopService extends BaseTest {
         shop.setAdvice("审核中");
         File file = new File("D:\\projectdev\\iamge\\cat.jpg");
         InputStream inputStream = new FileInputStream(file);
-        ShopExecution se = shopService.addShop(shop, inputStream, file.getName());
+        ShopExecution se = shopService.addShop(shop, new ImageHolder(file.getName(),inputStream));
         assertEquals(ShopStateEnum.CHECK.getStatus(), se.getStatus());
 
     }

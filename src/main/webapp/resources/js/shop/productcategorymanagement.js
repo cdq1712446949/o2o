@@ -31,7 +31,6 @@ $(function () {
     getList();
 
     $('#submit').click(function () {
-        debugger;
         var tempArr = $('.temp');
         var productCategoryList = [];
         tempArr.map(function (index, item) {

@@ -1,5 +1,6 @@
 package com.cdq.o2o.service;
 
+import com.cdq.o2o.dto.ImageHolder;
 import com.cdq.o2o.dto.ShopExecution;
 import com.cdq.o2o.entity.Shop;
 import com.cdq.o2o.exceptions.ShopOperationException;
@@ -28,21 +29,17 @@ public interface ShopService {
     /**
      * 修改店铺信息
      * @param shop
-     * @param shopImgInputStream
-     * @param fileNmae
      * @return
      * @throws ShopOperationException
      */
-    ShopExecution modifyShop(Shop shop, InputStream shopImgInputStream, String fileNmae) throws ShopOperationException;
+    ShopExecution modifyShop(Shop shop, ImageHolder imageHolder) throws ShopOperationException;
 
     /**
      * 添加店铺信息
      *
      * @param shop
-     * @param image
-     * @param fileName
      * @return
      */
-    ShopExecution addShop(Shop shop, InputStream image, String fileName);
+    ShopExecution addShop(Shop shop, ImageHolder imageHolder);
 
 }

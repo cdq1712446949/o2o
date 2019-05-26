@@ -1,5 +1,6 @@
 package com.cdq.o2o.util;
 
+import com.cdq.o2o.dto.ImageHolder;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.slf4j.Logger;
@@ -32,9 +33,9 @@ public class ImageUtil {
      *
      * @param targetAddr 文件存放地址
      */
-    public static String generateThumbnails(InputStream inputStream, String targetAddr, String fileName) {
+    public static String generateThumbnails(ImageHolder imageHolder, String targetAddr) {
         String realFileName = getRandomFileName();
-        String extension = getFileExtension(fileName);
+        String extension = getFileExtension(imageHolder.getImgName());
         makeDirPath(targetAddr);
         String relativeAddr = targetAddr + realFileName + extension;
         logger.debug("current relativeAddr:" + relativeAddr);
@@ -42,7 +43,7 @@ public class ImageUtil {
         logger.debug("current completeAddr:" + PathUtil.getImageBasePath() + relativeAddr);
         try {
             basePath = URLDecoder.decode(basePath, "utf-8");
-            Thumbnails.of(inputStream).size(200, 200)
+            Thumbnails.of(imageHolder.getInputStream()).size(200, 200)
                     .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath + "watermark.jpg")), 0.25f)
                     .outputQuality(0.8f)
                     .toFile(file);
@@ -121,4 +122,30 @@ public class ImageUtil {
 
     }
 
+    public static String generateNormalImg(ImageHolder productImgHolder, String dest) {
+
+        //1.获取随机文件名
+        String randomFileNmae=ImageUtil.getRandomFileName();
+        //2.获取后缀名
+        String fileExtension=ImageUtil.getFileExtension(productImgHolder.getImgName());
+        //获取相对地址
+        String relativeAddr=dest+randomFileNmae+fileExtension;
+        //创建路径文件
+        makeDirPath(dest);
+        //创建文件
+        File file=new File(PathUtil.getImageBasePath()+relativeAddr);
+        if (productImgHolder.getInputStream()!=null){
+            try{
+                //解决空格被转换成%20的问题
+                basePath=URLDecoder.decode(basePath,"utf-8");
+                Thumbnails.of(productImgHolder.getInputStream()).size(337,640)
+                        .watermark(Positions.BOTTOM_RIGHT,ImageIO.read(new File(basePath+"watermark.jpg")),0.25f)
+                        .outputQuality(0.8f)
+                        .toFile(file);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return relativeAddr;
+    }
 }

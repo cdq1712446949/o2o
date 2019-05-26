@@ -1,5 +1,6 @@
 package com.cdq.o2o.web.shopadmin;
 
+import com.cdq.o2o.dto.ImageHolder;
 import com.cdq.o2o.dto.ShopExecution;
 import com.cdq.o2o.entity.Area;
 import com.cdq.o2o.entity.PersonInfo;
@@ -116,9 +117,8 @@ public class ShopManagementController {
             shop.setOwner(owner);
             ShopExecution se = null;
             try {
-                se = shopService.addShop(shop
-                        , commonsMultipartFile.getInputStream()
-                        , commonsMultipartFile.getOriginalFilename());
+                ImageHolder imageHolder=new ImageHolder(commonsMultipartFile.getOriginalFilename(),commonsMultipartFile.getInputStream());
+                se = shopService.addShop(shop,imageHolder);
                 if (se.getStatus() == ShopStateEnum.CHECK.getStatus()) {
                     modelMap.put("success", true);
                     //登陆用户可以操作的店铺列表
@@ -266,11 +266,10 @@ public class ShopManagementController {
             ShopExecution se = null;
             try {
                 if (commonsMultipartFile == null) {
-                    se = shopService.modifyShop(shop, null, null);
+                    se = shopService.modifyShop(shop, null);
                 }else{
-                    se = shopService.modifyShop(shop
-                            , commonsMultipartFile.getInputStream()
-                            , commonsMultipartFile.getOriginalFilename());
+                    ImageHolder imageHolder=new ImageHolder(commonsMultipartFile.getOriginalFilename(),commonsMultipartFile.getInputStream());
+                    se = shopService.modifyShop(shop,imageHolder);
                 }
                 if (se.getStatus() == ShopStateEnum.SUCCESS.getStatus()) {
                     modelMap.put("success", true);
