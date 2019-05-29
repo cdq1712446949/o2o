@@ -43,9 +43,28 @@ public class TestProductDao extends BaseTest {
     }
 
     @Test
-    public void testQueryProductList(){
-        List<Product> list=productDao.queryProductList(15L);
+    public void testQueryProductListAndCount(){
+        Product productCondition = new Product();
+        Shop shop=new Shop();
+        shop.setShopId(15L);
+        productCondition.setShop(shop);
+        List<Product> list=productDao.queryProductList(productCondition,0,2);
+        int count = productDao.queryListCount(productCondition);
         System.out.println("商品数量："+list.size());
+        System.out.println("商品总数："+count);
+    }
+
+    @Test
+    public void testModifyProduct(){
+        Shop shop=new Shop();
+        shop.setShopId(15L);
+        Product product=new Product();
+        product.setProductId(19L);
+        product.setShop(shop);
+        product.setLastEditTime(new Date());
+        product.setProductName("dao层测试");
+        int en=productDao.modifyProduct(product);
+        System.out.println("影响行数："+en);
     }
 
 }

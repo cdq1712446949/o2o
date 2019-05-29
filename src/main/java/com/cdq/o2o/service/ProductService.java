@@ -28,9 +28,10 @@ public interface ProductService {
 
     /**
      * 根据shopId获取商品列表
-     * @param shopId
      * @return
      */
-    ProductExecution getProductList(Long shopId);
+    ProductExecution getProductList(Product productCondition,int pageIndex,int pageSize);
+
+
 
 }

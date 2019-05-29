@@ -34,4 +34,10 @@ public class TestProductImgDao extends BaseTest {
         System.out.println("影响行数："+en);
     }
 
+    @Test
+    public void testDeleteProductImg(){
+        int en=productImgDao.deleteProductImgByProductId(16L);
+        System.out.println("影响行数："+en);
+    }
+
 }

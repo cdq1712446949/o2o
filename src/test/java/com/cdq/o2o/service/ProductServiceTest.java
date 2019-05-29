@@ -64,7 +64,11 @@ public class ProductServiceTest extends BaseTest {
 
     @Test
     public void testGetProductList(){
-        ProductExecution productExecutio=productService.getProductList(15L);
+        Product productCondition = new Product();
+        Shop shop=new Shop();
+        shop.setShopId(15L);
+        productCondition.setShop(shop);
+        ProductExecution productExecutio=productService.getProductList(productCondition,2,2);
         System.out.println("pe.getStateInfo:"+productExecutio.getStateInfo());
     }
 

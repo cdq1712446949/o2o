@@ -18,7 +18,7 @@ $(function () {
         getProductInfo();
         isEdit = true;
     } else {
-        getProductCategoryList()
+        getProductCategoryList();
         isEdit = false;
     }
 
@@ -31,23 +31,38 @@ $(function () {
                 $('#product-priority').val(product.priority);
                 $('#product-normal-price').val(product.normalPrice);
                 $('#product-now-price').val(product.promotionPrice);
-                var optionHtml = '';
-                var optionArr = data.data;
                 var optionSelected = product.productCategory.productCategoryId;
-                optionArr.map(function (item, index) {
-                    var isSelect = optionSelected === item.productCategoryId ? 'selected'
-                        : '';
-                    optionHtml += '<option data-value="'
-                        + item.productCategoryId
-                        + '"'
-                        + isSelect
-                        + '>'
-                        + item.productCategoryName
-                        + '</option>';
+                initProductCategory(optionSelected);
+            } else {
+                $.toast("获取商品信息失败" + data.errMsg);
+            }
+        });
+    }
+
+    function initProductCategory(optionSelected){
+        $.getJSON(getCategoryListUrl, function (data) {
+            if (data.success) {
+                var productCategoryList = data.data;
+                var optionHtml = '';
+                var isSelected='selected';
+                productCategoryList.map(function (item, index) {
+                   if (optionSelected==item.productCategoryId){
+                       optionHtml += '<option data-value="'
+                           + item.productCategoryId
+                           + '"'
+                           + isSelected
+                           + '>'
+                           + item.productCategoryName
+                           + '</option>';
+                   }else{
+                       optionHtml += '<option data-value="'
+                           + item.productCategoryId + '">'
+                           + item.productCategoryName + '</option>';
+                   }
                 });
                 $('#product-category').html(optionHtml);
             } else {
-                $.toast("获取商品信息失败" + data.errMsg);
+                $.toast("获取商品类别失败" + data.errMsg);
             }
         });
     }
@@ -66,7 +81,7 @@ $(function () {
             } else {
                 $.toast("获取商品类别失败" + data.errMsg);
             }
-        })
+        });
     }
 
     $('.detail-img-div').on('change', '.detail-img:last-child', function () {

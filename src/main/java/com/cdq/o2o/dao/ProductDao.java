@@ -1,6 +1,7 @@
 package com.cdq.o2o.dao;
 
 import com.cdq.o2o.entity.Product;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -28,16 +29,23 @@ public interface ProductDao {
     Product queryProductByProductId(Long productId);
 
     /**
-     * 通过shopid选取商品列表
-     * @param shopId
+     * 分页获取商品列表，查询条件：shopId,productCategoryId,productName,enableStatus
      * @return
      */
-    List<Product> queryProductList(Long shopId);
+    List<Product> queryProductList(@Param("productCondition") Product productCondition
+            ,@Param("rowIndex")int rowIndex,@Param("pageSize")int pageSize);
 
     /**
-     * 修改商品信息
-     * @param product
+     * 获取queryProductList总数
+     * @param productCondition
      * @return
+     */
+    int queryListCount(@Param("productCondition") Product productCondition);
+
+    /**
+     * 修改商品信息,shop.shopId不能为空,productId不能为空
+     * @param product
+     * @return 影响行数
      */
     int modifyProduct(Product product);
 

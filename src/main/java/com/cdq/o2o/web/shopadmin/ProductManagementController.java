@@ -36,14 +36,20 @@ public class ProductManagementController {
     @RequestMapping(value = "/getproductlist",method = RequestMethod.GET)
     @ResponseBody
     private Map<String,Object> getProductList(HttpServletRequest request){
+        //TODO 测试用数据，前端获取
+        Product productCondition=new Product();
+
         Map<String,Object> modelMap=new HashMap<>();
         Shop currentShop=(Shop)request.getSession().getAttribute("currentShop");
+
+        productCondition.setShop(currentShop);
+
         if (currentShop==null||currentShop.getShopId()==0){
             modelMap.put("success",false);
             modelMap.put("errMsg","请选择店铺");
         }else{
             try{
-                ProductExecution pe=productService.getProductList(currentShop.getShopId());
+                ProductExecution pe=productService.getProductList(productCondition,1,10);
                 if (pe.getState()==ProductStateEnum.SUCCESS.getState()){
                     modelMap.put("success",true);
                     modelMap.put("productList",pe.getProductList());
