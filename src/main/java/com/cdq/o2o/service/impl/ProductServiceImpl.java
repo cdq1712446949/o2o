@@ -1,5 +1,6 @@
 package com.cdq.o2o.service.impl;
 
+import com.beust.jcommander.internal.Nullable;
 import com.cdq.o2o.dao.ProductDao;
 import com.cdq.o2o.dao.ProductImgDao;
 import com.cdq.o2o.dto.ImageHolder;
@@ -97,6 +98,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 组合查询
+     *
      * @param productCondition
      * @param pageIndex
      * @param pageSize
@@ -106,14 +108,81 @@ public class ProductServiceImpl implements ProductService {
     public ProductExecution getProductList(Product productCondition, int pageIndex, int pageSize) {
         ProductExecution pe = null;
         List<Product> productList = new ArrayList<>();
-        int rowIndex=PageCalculator.calculatorRowIndex(pageIndex,pageSize);
+        int rowIndex = PageCalculator.calculatorRowIndex(pageIndex, pageSize);
         try {
-            productList = productDao.queryProductList(productCondition,rowIndex,pageSize);
+            productList = productDao.queryProductList(productCondition, rowIndex, pageSize);
             pe = new ProductExecution(ProductStateEnum.SUCCESS, productList);
         } catch (Exception e) {
             pe = new ProductExecution(ProductStateEnum.INNER_ERROR);
         }
         return pe;
+    }
+
+    /**
+     * 1.非空判断(currentShop在controller层添加进product中)
+     * 2.如果缩略图文件流不为空，根据productId在数据库取出完整数据，然后删除该商品缩略图
+     * 3.如果详情图片文件流不为空，根据tempProduct删除详情图片
+     * 4.更新数据库信息
+     *
+     * @param product         必须有productId，shop.shopId,修改后的数据
+     * @param imageHolder     可以为空
+     * @param imageHolderList 可以为空
+     * @return
+     * @throws ProductException
+     */
+    @Override
+    @Transactional
+    public ProductExecution modifyProduct(Product product, @Nullable ImageHolder imageHolder, @Nullable List<ImageHolder> imageHolderList) throws ProductException {
+        ProductExecution pe = null;
+        Product tempProduct = null;
+        if (product != null && product.getShop() != null && product.getShop().getShopId() != null) {
+            //给商品赋值
+            product.setLastEditTime(new Date());
+            //如果缩略图文件流不为空，根据productId在数据库取出完整数据，然后删除该商品缩略图,再为product添加缩略图信息
+            if (imageHolder != null && imageHolder.getInputStream() != null) {
+                tempProduct = productDao.queryProductByProductId(product.getProductId());
+                //根据数据库缩略图信息删除缩略图
+                if (tempProduct.getImgAddr() != null) {
+                    ImageUtil.deleteFileOrPath(tempProduct.getImgAddr());
+                }
+                addThumbnali(product, imageHolder);
+            }
+            //如果详情图片文件流不为空，根据tempProduct删除详情图片
+            if (imageHolderList != null && imageHolderList.size() > 0) {
+                deleteProductImgList(product.getProductId());
+                addProductImgList(product,imageHolderList);
+            }
+            try{
+                int en=productDao.modifyProduct(product);
+                if (en>0){
+                    pe=new ProductExecution(ProductStateEnum.SUCCESS);
+                }else {
+                    throw new ProductException("更新商品失败：");
+                }
+            }catch (Exception e){
+                throw new ProductException("修改商品信息出错："+e.toString());
+            }
+        } else {
+            pe = new ProductExecution(ProductStateEnum.EMPTY);
+        }
+        return pe;
+    }
+
+    /**
+     * 根据productId删除文件以及数据库记录
+     * @param productId
+     */
+    private void deleteProductImgList(Long productId) {
+        //获取图片信息
+        List<ProductImg> list=productImgDao.queryProductImgList(productId);
+        if (list!=null&&list.size()>0){
+            //删除图片
+            for (ProductImg pi:list){
+                ImageUtil.deleteFileOrPath(pi.getImgAddr());
+            }
+        }
+        //删除数据库记录
+        productImgDao.deleteProductImgByProductId(productId);
     }
 
     private void addProductImgList(Product product, List<ImageHolder> imageHolderList) {

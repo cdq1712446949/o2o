@@ -40,4 +40,10 @@ public class TestProductImgDao extends BaseTest {
         System.out.println("影响行数："+en);
     }
 
+    @Test
+    public void testQueryProductImgList(){
+        List<ProductImg> list=productImgDao.queryProductImgList(19L);
+        System.out.println("链表大小："+list.size());
+    }
+
 }
