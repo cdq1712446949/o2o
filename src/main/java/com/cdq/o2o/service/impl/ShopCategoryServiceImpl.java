@@ -16,16 +16,16 @@ public class ShopCategoryServiceImpl implements ShopCategoryService {
     private ShopCategoryDao shopCategoryDao;
 
     @Override
-    public List<ShopCategory> getShopCategory() {
+    public List<ShopCategory> getShopCategory(ShopCategory shopCategory) {
         List<ShopCategory> list = new ArrayList<>();
-        list=shopCategoryDao.getShopCategory();
+        list=shopCategoryDao.getShopCategory(shopCategory);
         return list;
     }
 
     @Override
-    public List<ShopCategory> getAllSecondLevelShopCategory() {
+    public List<ShopCategory> getAllSecondLevelShopCategory(ShopCategory shopCategory) {
         List<ShopCategory> list = new ArrayList<>();
-        list=shopCategoryDao.getShopCategory();
+        list=shopCategoryDao.getShopCategory(shopCategory);
         return list;
     }
 }

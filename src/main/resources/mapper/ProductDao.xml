@@ -178,4 +178,9 @@
         ORDER BY
         pm.priority DESC
     </select>
+    <update id="updateProductCatgegoryToNull" parameterType="Long" >
+        update tb_product
+        set product_category_id=null
+        where product_category_id=#{productCategoryId}
+    </update>
 </mapper>

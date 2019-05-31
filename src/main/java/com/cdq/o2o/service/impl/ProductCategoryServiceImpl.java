@@ -1,10 +1,12 @@
 package com.cdq.o2o.service.impl;
 
 import com.cdq.o2o.dao.ProductCategoryDao;
+import com.cdq.o2o.dao.ProductDao;
 import com.cdq.o2o.dto.ProductCategoryExecution;
 import com.cdq.o2o.entity.ProductCategory;
 import com.cdq.o2o.enums.ProductCategoryStateEnum;
 import com.cdq.o2o.exceptions.ProductCategoryException;
+import com.cdq.o2o.exceptions.ProductException;
 import com.cdq.o2o.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Autowired
     private ProductCategoryDao productCategoryDao;
+    @Autowired
+    private ProductDao productDao;
 
     @Override
     public List<ProductCategory> getProductCategoryList(Long shopId) {
@@ -52,7 +56,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     @Transactional
     public ProductCategoryExecution deleteProductCategory(Long productCategoryId, Long shopId) throws ProductCategoryException {
-        //TODO 将此商品类别下的商品的类别设为空
+        //解除tb_product和tb_product_category的关联
+        try{
+            int en=productDao.updateProductCatgegoryToNull(productCategoryId);
+            if (en<1){
+                throw new ProductCategoryException("商品类别删除失败");
+            }
+        }catch (Exception e){
+            throw new ProductCategoryException("商品类别删除失败"+e.toString());
+        }
+        //删除tb_product数据
         try{
             int effectNum=productCategoryDao.deleteProductCategory(productCategoryId,shopId);
             if (effectNum<=0){

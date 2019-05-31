@@ -186,7 +186,7 @@ public class ShopManagementController {
         Map<String, Object> modelMap = new HashMap<>();
         List<ShopCategory> shopCategoryList = new ArrayList<>();
         List<Area> areaList = new ArrayList<>();
-        shopCategoryList = shopCategoryService.getShopCategory();
+        shopCategoryList = shopCategoryService.getShopCategory(null);
         areaList = areaService.getAreaList();
         modelMap.put("shopCategoryList", shopCategoryList);
         modelMap.put("areaList", areaList);

@@ -42,7 +42,8 @@ public class ProductManagementController {
     @RequestMapping(value = "/getproductlist", method = RequestMethod.GET)
     @ResponseBody
     private Map<String, Object> getProductList(HttpServletRequest request) {
-        //TODO 测试用数据，前端获取
+        //TODO 测试用数据，前端获取,pageIndex,pageSize,验证pageIndex，pageSize
+        //TODO 前端获取查询条件，然后组合查询条件返回productCondition调用service查询链表
         Product productCondition = new Product();
 
         Map<String, Object> modelMap = new HashMap<>();

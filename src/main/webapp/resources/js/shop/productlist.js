@@ -13,29 +13,31 @@ $(function () {
     var enableSta = '&&enableStatus=';
     var statusChange = '&&statusChange=true';
     lowerProduct = function (productId, enableStatus) {
-        var formData = new FormData();
-        formData.append("statusChange", true);
-        var productStr = {
-            productId: productId,
-            enableStatus: enableStatus
-        };
-        productStr=JSON.stringify(productStr);
-        formData.append("productStr", productStr);
-        $.ajax({
-            url: lowerProductUrl,
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            cache: false,
-            success: function (data) {
-                if (data.success) {
-                    $.toast("操作成功");
-                    initProductList();
-                } else {
-                    $.toast("操作失败:" + data.errMsg);
+        $.confirm("确定执行这个操作吗？",function(){
+            var formData = new FormData();
+            formData.append("statusChange", true);
+            var productStr = {
+                productId: productId,
+                enableStatus: enableStatus
+            };
+            productStr=JSON.stringify(productStr);
+            formData.append("productStr", productStr);
+            $.ajax({
+                url: lowerProductUrl,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        $.toast("操作成功");
+                        initProductList();
+                    } else {
+                        $.toast("操作失败:" + data.errMsg);
+                    }
                 }
-            }
+            });
         });
     };
 

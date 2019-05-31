@@ -56,4 +56,11 @@ public interface ProductDao {
      */
     int deleteProduct(Long productId);
 
+    /**
+     * 根据productCategoryId把tb_product商品类别字段设为null
+     * @param productCategoryId
+     * @return
+     */
+    int updateProductCatgegoryToNull(Long productCategoryId);
+
 }

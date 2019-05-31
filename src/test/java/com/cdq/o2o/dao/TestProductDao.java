@@ -67,4 +67,11 @@ public class TestProductDao extends BaseTest {
         System.out.println("影响行数："+en);
     }
 
+    @Test
+    public void testToNull(){
+        int en=productDao.updateProductCatgegoryToNull(20L);
+        System.out.println("影响行数："+en);
+    }
+
+
 }
